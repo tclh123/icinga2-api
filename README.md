@@ -71,9 +71,9 @@ GET /types/<objectname>
 ```
 from icinga2_api.api import Api
 
-api = Api(ICINGA_HOSTS,
-          ICINGA_AUTH,
-          ICINGA_CACERT)
+api = Api(['config-master.localdomain', 'icinga-api1.localdomin', 'icinga-api2.localdomin'],
+          (username, passwd),
+          'path of your ca cert')
 
 print api.objects.hosts.get(attrs=["name"])
 print api.objects.hosts.get(attrs=["name"], filter='host.name == "sindar1a"')
