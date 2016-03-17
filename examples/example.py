@@ -17,17 +17,30 @@ api = Api(ICINGA_HOSTS,
           ICINGA_CACERT)
 
 # print api.objects.hosts.get(attrs=["name"])
-pprint(api.objects.hosts.get(attrs=["name"], filter='host.name == "sindar1a"'))
+# pprint(api.objects.hosts.get(attrs=["name"], filter='host.name == "sindar1a"'))
 
-pprint(api.config.packages.dae.post())
+# pprint(api.config.packages.dae.post())
 # print api.config.packages.dae.delete()
 pprint(api.config.packages.get())
+# pprint(api.config.stages.dae.url('sindar33a-1458219125-0').get())
 
-files = {
-    'zones.d/global-templates/dae.conf': '// Hello DAE yesyesyes',
-    'zones.d/checker/dae.conf': '// Hello DAE',
-}
-pprint(api.config.stages.dae.post(files=files))
+# files = {
+#     'zones.d/global-templates/dae.conf': '// Hello DAE yesyesyes',
+#     'zones.d/checker/dae.conf': '// Hello DAE',
+# }
+# pprint(api.config.stages.dae.post(files=files))
+
+MAX_STAGE_RESERVED = 3
+r = api.config.packages.get()
+for pkg in r.get('results', []):
+    if pkg['name'] != 'dae':
+        continue
+    remove_cnt = max(len(pkg['stages']) - MAX_STAGE_RESERVED, 0)
+    remove_stages = pkg['stages'][:remove_cnt]
+    print 'going to remove', remove_stages
+    for stage in remove_stages:
+        api.config.stages.dae.url(stage).delete()
+pprint(api.config.packages.get())
 
 """
 {u'results': [{u'attrs': {u'name': u'sindar1a'},
@@ -39,9 +52,13 @@ pprint(api.config.stages.dae.post(files=files))
 {u'results': [{u'active-stage': u'sindar33a-1456295880-0',
                u'name': u'_api',
                u'stages': [u'sindar33a-1456295880-0']},
-              {u'active-stage': u'sindar33a-1458203812-0',
+              {u'active-stage': u'sindar33a-1458219125-0',
                u'name': u'dae',
-               u'stages': [u'sindar33a-1458203812-0']}]}
+               u'stages': [u'sindar33a-1458203812-0',
+                           u'sindar33a-1458203964-0',
+                           u'sindar33a-1458204377-0',
+                           u'sindar33a-1458218766-0',
+                           u'sindar33a-1458219125-0']}]}
 {u'results': [{u'code': 200.0,
                u'package': u'dae',
                u'stage': u'sindar33a-1458203964-0',

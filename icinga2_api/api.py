@@ -15,22 +15,27 @@ class Api(object):
         HTTP_METHODS = ('GET', 'POST', 'PUT', 'DELETE')
 
         def __init__(self, api, url):
-            self.api = api
-            self.url = url
+            self._api = api
+            self._url = url
 
         def __getattr__(self, attr):
+            if attr == 'url':
+                def _func_url(url):
+                    self._url += '/%s' % url
+                    return self
+                return _func_url
             if attr.upper() in self.HTTP_METHODS:
-                def _call(**kw):
-                    for i in range(len(self.api._hosts)):
-                        host = self.api._hosts[0]
+                def _func_call(**kw):
+                    for i in range(len(self._api._hosts)):
+                        host = self._api._hosts[0]
                         try:
-                            res = self.api._request(attr, self.url, kw, host=host)
+                            res = self._api._request(attr, self._url, kw, host=host)
                             return res
                         except Exception as e:
                             logger.warn('request %s error: %s' % (host, e))
                             pass
-                return _call
-            self.url += '/%s' % attr
+                return _func_call
+            self._url += '/%s' % attr
             return self
 
     def __init__(self, hosts, auth, cacert, port=5665, url_prefix='/v1',
