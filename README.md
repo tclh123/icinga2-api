@@ -83,3 +83,4 @@ print api.objects.hosts.get(attrs=["name"], filter='host.name == "sindar1a"')
 
 - only support Advanced Filters
 - only support http basic auth
+- I think there's bug in icinga2 api, that you better query to only one host(your cluster config master) when you need to manipulate config package
