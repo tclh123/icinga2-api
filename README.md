@@ -70,13 +70,42 @@ GET /types/<objectname>
 
 ```
 from icinga2_api.api import Api
+from pprint import pprint
 
+# init api instance
 api = Api(['config-master.localdomain', 'icinga-api1.localdomin', 'icinga-api2.localdomin'],
           (username, passwd),
           'path of your ca cert')
 
+# /objects/hosts
 print api.objects.hosts.get(attrs=["name"])
-print api.objects.hosts.get(attrs=["name"], filter='host.name == "sindar1a"')
+pprint(api.objects.hosts.get(attrs=["name"], filter='host.name == "sindar1a"'))
+
+# /config/packages
+pprint(api.config.packages.dae.post())
+print api.config.packages.dae.delete()
+pprint(api.config.packages.get())
+pprint(api.config.stages.dae.url('sindar33a-1458219125-0').get())
+
+## upload config file
+files = {
+    'zones.d/global-templates/dae.conf': '// Hello DAE yesyesyes',
+    'zones.d/checker/dae.conf': '// Hello DAE',
+}
+pprint(api.config.stages.dae.post(files=files))
+
+## clean old config package stages
+MAX_STAGE_RESERVED = 3
+r = api.config.packages.get()
+for pkg in r.get('results', []):
+    if pkg['name'] != 'dae':
+        continue
+    remove_cnt = max(len(pkg['stages']) - MAX_STAGE_RESERVED, 0)
+    remove_stages = pkg['stages'][:remove_cnt]
+    print 'going to remove', remove_stages
+    for stage in remove_stages:
+        api.config.stages.dae.url(stage).delete()
+pprint(api.config.packages.get())
 ```
 
 ## NOTES
