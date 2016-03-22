@@ -26,14 +26,17 @@ class Api(object):
                 return _func_url
             if attr.upper() in self.HTTP_METHODS:
                 def _func_call(**kw):
+                    res = None
                     for i in range(len(self._api._hosts)):
                         host = self._api._hosts[0]
                         try:
                             res = self._api._request(attr, self._url, kw, host=host)
                             return res
                         except Exception as e:
+                            res = e
                             logger.warn('request %s error: %s' % (host, e))
                             pass
+                    return {'Error': 'failed on all hosts, last fail: %s' % res}
                 return _func_call
             self._url += '/%s' % attr
             return self
