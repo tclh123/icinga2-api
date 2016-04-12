@@ -18,6 +18,7 @@ api = Api(ICINGA_HOSTS,
 
 # print api.objects.hosts.get(attrs=["name"])
 # pprint(api.objects.hosts.get(attrs=["name"], filter='host.name == "sindar1a"'))
+print api.objects.services.get(filter='host.name == "sindar1a"')
 
 # pprint(api.config.packages.dae.post())
 # print api.config.packages.dae.delete()
@@ -30,17 +31,17 @@ pprint(api.config.packages.get())
 # }
 # pprint(api.config.stages.dae.post(files=files))
 
-MAX_STAGE_RESERVED = 3
-r = api.config.packages.get()
-for pkg in r.get('results', []):
-    if pkg['name'] != 'dae':
-        continue
-    remove_cnt = max(len(pkg['stages']) - MAX_STAGE_RESERVED, 0)
-    remove_stages = pkg['stages'][:remove_cnt]
-    print 'going to remove', remove_stages
-    for stage in remove_stages:
-        api.config.stages.dae.url(stage).delete()
-pprint(api.config.packages.get())
+# MAX_STAGE_RESERVED = 10
+# r = api.config.packages.get()
+# for pkg in r.get('results', []):
+#     if pkg['name'] != 'dae':
+#         continue
+#     remove_cnt = max(len(pkg['stages']) - MAX_STAGE_RESERVED, 0)
+#     remove_stages = pkg['stages'][:remove_cnt]
+#     print 'going to remove', remove_stages
+#     for stage in remove_stages:
+#         api.config.stages.dae.url(stage).delete()
+# pprint(api.config.packages.get())
 
 """
 {u'results': [{u'attrs': {u'name': u'sindar1a'},
