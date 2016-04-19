@@ -9,20 +9,21 @@ from examples.config import (ICINGA_HOSTS,
                              ICINGA_AUTH,
                              ICINGA_CACERT)
 
-# logging.basicConfig(level=logging.INFO,
-#                     format='%(asctime)s %(name)s %(levelname)s %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(name)s %(levelname)s %(message)s')
 
+print ICINGA_AUTH
 api = Api(ICINGA_HOSTS,
           ICINGA_AUTH,
           ICINGA_CACERT)
 
 # print api.objects.hosts.get(attrs=["name"])
 # pprint(api.objects.hosts.get(attrs=["name"], filter='host.name == "sindar1a"'))
-print api.objects.services.get(filter='host.name == "sindar1a"')
+# print api.objects.services.get(filter='host.name == "sindar1a"')
 
 # pprint(api.config.packages.dae.post())
 # print api.config.packages.dae.delete()
-pprint(api.config.packages.get())
+# pprint(api.config.packages.get())
 # pprint(api.config.stages.dae.url('sindar33a-1458219125-0').get())
 
 # files = {
@@ -42,6 +43,10 @@ pprint(api.config.packages.get())
 #     for stage in remove_stages:
 #         api.config.stages.dae.url(stage).delete()
 # pprint(api.config.packages.get())
+
+print api.actions.url('acknowledge-problem').post(filter='service.name == "DAE-bridge-app_version"',
+                                                  type='Service',
+                                                  author='whoami', comment='test by whoami')
 
 """
 {u'results': [{u'attrs': {u'name': u'sindar1a'},
