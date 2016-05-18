@@ -44,7 +44,7 @@ api = Api(ICINGA_HOSTS,
 #         api.config.stages.dae.url(stage).delete()
 # pprint(api.config.packages.get())
 
-print api.actions.url('acknowledge-problem').post(filter='service.name == "DAE-bridge-app_version"',
+print api.actions.url('acknowledge-problem').post(filter='service.name == "DAE-bridge-app_version && host.name == "DAE-config-package"',
                                                   type='Service',
                                                   author='whoami', comment='test by whoami')
 
