@@ -32,10 +32,12 @@ class Api(object):
                         try:
                             res = self._api._request(attr, self._url, kw, host=host)
                             return res
-                        except Exception as e:
+                        except requests.exceptions.RequestException as e:
                             res = e
                             logger.warn('request %s error: %s' % (host, e))
                             pass
+                        except Exception:
+                            raise
                     return {'Error': 'failed on all hosts, last fail: %s' % res}
                 return _func_call
             self._url += '/%s' % attr
@@ -44,7 +46,7 @@ class Api(object):
     def __init__(self, hosts, auth, cacert, port=5665, url_prefix='/v1',
                  ignore_python_warnings=True):
         self._hosts = list(hosts)
-        self._auth = auth
+        self._auth = tuple(auth)
         self._cacert = cacert
         self._url_base_pattern = ('https://%s:{port}/{url_prefix}'
                                   .format(port=port,
