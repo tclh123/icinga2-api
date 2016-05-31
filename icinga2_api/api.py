@@ -44,7 +44,7 @@ class Api(object):
             return self
 
     def __init__(self, hosts, auth, cacert, port=5665, url_prefix='/v1',
-                 ignore_python_warnings=True):
+                 ignore_python_warnings=True, timeout=None):
         self._hosts = list(hosts)
         self._auth = tuple(auth)
         self._cacert = cacert
@@ -52,6 +52,7 @@ class Api(object):
                                   .format(port=port,
                                           url_prefix=url_prefix.strip('/')))
         self._ignore_python_warnings = ignore_python_warnings
+        self._timeout = timeout
 
     def _request(self, method, url, data, host=None):
         if not host:
@@ -72,7 +73,8 @@ class Api(object):
                               headers=headers,
                               auth=self._auth,
                               data=json.dumps(data),
-                              verify=self._cacert)
+                              verify=self._cacert,
+                              timeout=self._timeout)
         try:
             res = r.json()
         except:
