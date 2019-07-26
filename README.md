@@ -1,20 +1,24 @@
 # icinga2-api
 
+![](https://img.shields.io/pypi/pyversions/icinga2py)
+
 An icinga2 API client, see <http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api> to learn more about icinga2 API.
 
-## development guide
+## Installation
 
-```
-virtualenv venv
-. venv/bin/activate
-pip install --upgrade pip
-pip install --upgrade setuptools
-pip install -e . --process-dependency-links
+```shell
+pip install icinga2py
 ```
 
-### run examples
+## Development Guide
 
+```shell
+make init
 ```
+
+### Run Examples
+
+```shell
 . venv/bin/activate
 cp examples/local_config.py.example examples/local_config.py
 # edit examples/local_config.py
@@ -22,7 +26,7 @@ vi examples/local_config.py
 python examples/example.py
 ```
 
-## icinga2 API reference
+## Icinga2 API Reference
 
 ```
 perm, url, SUPPORTS FILTERS
@@ -68,7 +72,7 @@ GET /types/<objectname>
 
 ## Usage
 
-```
+```python
 from icinga2_api.api import Api
 from pprint import pprint
 

@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from __future__ import print_function
+
 import logging
-from pprint import pprint
+from pprint import pprint  # NOQA
 
 from icinga2_api.api import Api
 from examples.config import (ICINGA_HOSTS,
@@ -12,7 +14,7 @@ from examples.config import (ICINGA_HOSTS,
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(name)s %(levelname)s %(message)s')
 
-print ICINGA_AUTH
+print(ICINGA_AUTH)
 api = Api(ICINGA_HOSTS,
           ICINGA_AUTH,
           ICINGA_CACERT)
@@ -44,9 +46,9 @@ api = Api(ICINGA_HOSTS,
 #         api.config.stages.dae.url(stage).delete()
 # pprint(api.config.packages.get())
 
-print api.actions.url('acknowledge-problem').post(filter='service.name == "DAE-bridge-app_version" && host.name == "DAE-config-package"',
+print(api.actions.url('acknowledge-problem').post(filter='service.name == "DAE-bridge-app_version" && host.name == "DAE-config-package"',
                                                   type='Service',
-                                                  author='whoami', comment='test by whoami')
+                                                  author='whoami', comment='test by whoami'))
 
 """
 {u'results': [{u'attrs': {u'name': u'sindar1a'},
