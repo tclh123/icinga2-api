@@ -110,6 +110,13 @@ for pkg in r.get('results', []):
     for stage in remove_stages:
         api.config.stages.dae.url(stage).delete()
 pprint(api.config.packages.get())
+
+## watch events
+for event in api.events.watch(
+    types=['Notification'],
+    queue='my_queue',
+):
+    do_something_with(event)
 ```
 
 ## NOTES
