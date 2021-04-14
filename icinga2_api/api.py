@@ -6,6 +6,8 @@ import logging
 import warnings
 import requests
 
+VERB_WATCH = 'WATCH'
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,7 +26,7 @@ class Api(object):
                     self._url += '/%s' % url
                     return self
                 return _func_url
-            if attr.upper() in self.HTTP_METHODS:
+            if attr.upper() in self.HTTP_METHODS + (VERB_WATCH,):
                 def _func_call(**kw):
                     res = None
                     for i in range(len(self._api._hosts)):
@@ -63,8 +65,15 @@ class Api(object):
         url = '%s/%s' % (url_base, url)
         headers = {
             'Accept': 'application/json',
-            'X-HTTP-Method-Override': method.upper(),
         }
+
+        kwargs = {}
+        if method.upper() == VERB_WATCH:
+            kwargs['stream'] = True
+        else:
+            kwargs['timeout'] = self._timeout
+            headers['X-HTTP-Method-Override'] = method.upper()
+
         logger.info('request: %s %s %s' % (method, url, data))
         with warnings.catch_warnings():
             if self._ignore_python_warnings:
@@ -74,7 +83,19 @@ class Api(object):
                               auth=self._auth,
                               data=json.dumps(data),
                               verify=self._cacert,
-                              timeout=self._timeout)
+                              **kwargs)
+
+        if method.upper() == VERB_WATCH:
+            return self._parse_by_line(r)
+        else:
+            return self._parse_json(r)
+
+    def _parse_by_line(self, r):
+        for line in r.iter_lines():
+            if line:
+                yield json.loads(line)
+
+    def _parse_json(self, r):
         try:
             res = r.json()
         except:
